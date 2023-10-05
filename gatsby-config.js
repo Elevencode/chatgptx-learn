@@ -39,5 +39,47 @@ module.exports = {
         icon: `src/images/gatsby-icon.png`, // This path is relative to the root of the site.
       },
     },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `data`,
+        path: `${__dirname}/data`,
+      },
+    },
+    `gatsby-transformer-csv`,
+    // {
+    //   resolve: `@antv/gatsby-theme-antv`,
+    //   options: {
+    //     // pagesPath: './site/pages',
+    //     // GATrackingId: `UA-XXXXXXXXX-X`,
+    //     pathPrefix: '/g2',
+    //     // antd 主题：https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+    //     theme: {
+    //       'primary-color': '#873bf4',
+    //     },
+    //     pwa: true, 
+    //     cname: true, 
+    //     codeSplit: true, 
+    //   },
+    // },
+    // {
+    //   resolve: "gatsby-plugin-antd",
+    //   options: {
+    //     style: true,
+    //   },
+    // },
+
+    // {
+    //   resolve: "gatsby-plugin-less",
+    //   options: {
+    //     lessOptions: {
+    //       modifyVars: { //direct child node of lessOptions
+    //         "primary-color": "#C53333", //your preferred color
+    //       },
+    //       javascriptEnabled: true, //direct child node of lessOptions
+    //     },
+    //   },
+    // },
+
   ],
 }

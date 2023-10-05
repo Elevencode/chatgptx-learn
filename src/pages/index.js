@@ -1,128 +1,157 @@
 import * as React from "react"
-import { Link } from "gatsby"
+import { useState } from "react"
+import { useStaticQuery, graphql } from "gatsby"
 import { StaticImage } from "gatsby-plugin-image"
+import { Button, Card, message } from "antd";
+import { CopyOutlined } from '@ant-design/icons';
 
 import Layout from "../components/layout"
 import Seo from "../components/seo"
 import * as styles from "../components/index.module.css"
 
-const links = [
-  {
-    text: "Tutorial",
-    url: "https://www.gatsbyjs.com/docs/tutorial",
-    description:
-      "A great place to get started if you're new to web development. Designed to guide you through setting up your first Gatsby site.",
-  },
-  {
-    text: "Examples",
-    url: "https://github.com/gatsbyjs/gatsby/tree/master/examples",
-    description:
-      "A collection of websites ranging from very basic to complex/complete that illustrate how to accomplish specific tasks within your Gatsby sites.",
-  },
-  {
-    text: "Plugin Library",
-    url: "https://www.gatsbyjs.com/plugins",
-    description:
-      "Learn how to add functionality and customize your Gatsby site or app with thousands of plugins built by our amazing developer community.",
-  },
-  {
-    text: "Build and Host",
-    url: "https://www.gatsbyjs.com/cloud",
-    description:
-      "Now you’re ready to show the world! Give your Gatsby site superpowers: Build and host on Gatsby Cloud. Get started for free!",
-  },
-]
 
-const samplePageLinks = [
-  {
-    text: "Page 2",
-    url: "page-2",
-    badge: false,
-    description:
-      "A simple example of linking to another page within a Gatsby site",
-  },
-  { text: "TypeScript", url: "using-typescript" },
-  { text: "Server Side Rendering", url: "using-ssr" },
-  { text: "Deferred Static Generation", url: "using-dsg" },
-]
+const IndexPage = () => {
+  const data = useStaticQuery(graphql`
+    query {
+      allPrompts2Csv {
+        edges {
+          node {
+              id
+              Job
+              Prompt
+              Job_RU
+              Prompt_RU
+          }
+        }
+      }
+    }
+  `);
 
-const moreLinks = [
-  { text: "Join us on Discord", url: "https://gatsby.dev/discord" },
-  {
-    text: "Documentation",
-    url: "https://gatsbyjs.com/docs/",
-  },
-  {
-    text: "Starters",
-    url: "https://gatsbyjs.com/starters/",
-  },
-  {
-    text: "Showcase",
-    url: "https://gatsbyjs.com/showcase/",
-  },
-  {
-    text: "Contributing",
-    url: "https://www.gatsbyjs.com/contributing/",
-  },
-  { text: "Issues", url: "https://github.com/gatsbyjs/gatsby/issues" },
-]
+  const [currentFilter, setCurrentFilter] = useState('Все');
+  const jobOptions = ['Все', ...new Set(data.allPrompts2Csv.edges.map(edge => edge.node['Job_RU']))];
 
-const utmParameters = `?utm_source=starter&utm_medium=start-page&utm_campaign=default-starter`
+  const copyToClipboard = (text) => {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+  };
 
-const IndexPage = () => (
-  <Layout>
-    <div className={styles.textCenter}>
-      <StaticImage
-        src="../images/example.png"
-        loading="eager"
-        width={64}
-        quality={95}
-        formats={["auto", "webp", "avif"]}
-        alt=""
-        style={{ marginBottom: `var(--space-3)` }}
-      />
-      <h1>
-        Welcome to <b>Gatsby!</b>
-      </h1>
-      <p className={styles.intro}>
-        <b>Example pages:</b>{" "}
-        {samplePageLinks.map((link, i) => (
-          <React.Fragment key={link.url}>
-            <Link to={link.url}>{link.text}</Link>
-            {i !== samplePageLinks.length - 1 && <> · </>}
-          </React.Fragment>
-        ))}
-        <br />
-        Edit <code>src/pages/index.js</code> to update this page.
-      </p>
-    </div>
-    <ul className={styles.list}>
-      {links.map(link => (
-        <li key={link.url} className={styles.listItem}>
-          <a
-            className={styles.listItemLink}
-            href={`${link.url}${utmParameters}`}
-          >
-            {link.text} ↗
-          </a>
-          <p className={styles.listItemDescription}>{link.description}</p>
-        </li>
-      ))}
-    </ul>
-    {moreLinks.map((link, i) => (
-      <React.Fragment key={link.url}>
-        <a href={`${link.url}${utmParameters}`}>{link.text}</a>
-        {i !== moreLinks.length - 1 && <> · </>}
-      </React.Fragment>
-    ))}
-  </Layout>
-)
 
-/**
- * Head export to define metadata for the page
- *
- * See: https://www.gatsbyjs.com/docs/reference/built-in-components/gatsby-head/
- */
+  return (
+    <Layout>
+      <div className={styles.textCenter}>
+        <StaticImage
+          src="../images/computer.png"
+          loading="eager"
+          width={64}
+          quality={95}
+          formats={["auto", "webp", "avif"]}
+          alt=""
+          style={{ marginBottom: `var(--space-3)` }}
+        />
+        <h1>
+          <b style={{ color: '#1677FF' }}>ChatGPTx</b>
+        </h1>
+        <p className={styles.intro} style={{fontSize: '20px', fontFamily: 'PT Sans'}}>
+          Выберите лучший промпт для решения вашей задачи.
+        </p>
+        <h2 style={{textAlign: 'start', fontFamily: 'PT Sans'}}>
+        💼 Профессия
+        </h2>
+        <div className={styles.buttonGroup}>
+          {jobOptions.map(job => (
+            <Button
+              key={job}
+              type={currentFilter === job ? "primary" : "default"}
+              onClick={() => setCurrentFilter(job)}
+              style={{ margin: "5px", fontFamily: 'PT Sans'}}
+            >
+              {job}
+            </Button>
+          ))}
+        </div>
+        <h2 style={{textAlign: 'start', fontFamily: 'PT Sans'}}>
+        👨‍💻 Промпты
+        </h2>
+        <div className={styles.cardGroup}>
+          {data.allPrompts2Csv.edges
+            .filter(edge => currentFilter === 'Все' || edge.node['Job_RU'] === currentFilter)
+            .map(edge => (
+              <Card
+                key={edge.node.id}
+                style={{
+                  margin: '0px',
+                  width: '300px',
+                  height: '350px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '0px',
+                  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
+                }}
+                bodyStyle={{
+                  flex: 1,
+                  margin: "10px",
+                  padding: '0px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between'
+                }}
+                extra={
+                  <Button
+                    type="text"
+                    icon={<CopyOutlined />}
+                    onClick={() => {
+                      copyToClipboard(edge.node['Prompt_RU']);
+                      message.success('Скопировано');
+                    }}
+                  >
+                  </Button>
+                }
+              >
+                <div style={{
+                  overflowY: 'auto',
+                  flex: 1,
+                  maxHeight: '200px',
+                  marginBottom: '10px',
+                  textAlign: 'start',
+                  paddingLeft: '4px',
+                  paddingRight: '4px',
+                  fontFamily: 'PT Sans',
+                  fontSize: '16px'
+                }}>
+                  {edge.node['Prompt_RU']}
+                </div>
+
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  border: '1px solid #d9d9d9',
+                  borderRadius: '16px',
+                  padding: '5px 10px',
+                  marginTop: 'auto',
+                  marginBottom: '10px'
+                }}>
+                  <div style={{
+                    width: '8px',
+                    height: '8px',
+                    backgroundColor: '#1677FF',
+                    borderRadius: '50%',
+                    marginRight: '10px'
+                  }}>
+                  </div>
+                  <span style={{ fontSize: '12px' }}>{edge.node['Job_RU']}</span>
+                </div>
+              </Card>
+            ))}
+        </div>
+      </div>
+    </Layout>
+  )
+}
+
 export const Head = () => <Seo title="Home" />
 
 export default IndexPage

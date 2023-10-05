@@ -5,10 +5,8 @@
   --w: 280px;
   --n: 2;
   gap: var(--size-gap);
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(max(var(--w), 100%/ (var(--n) + 1) + 0.1%), 1fr)
-  );
+  grid-template-columns: repeat(auto-fit,
+      minmax(max(var(--w), 100%/ (var(--n) + 1) + 0.1%), 1fr));
   margin-bottom: var(--size-gap);
   margin-top: var(--size-gap);
 }
@@ -51,4 +49,50 @@
 .intro {
   max-width: none;
   line-height: var(--line-height-loose);
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+
+.button {
+  padding: 10px 15px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  max-width: 200px;
+  text-align: center;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+.button[active="true"] {
+  background-color: #1677FF;
+  color: white;
+}
+
+.button[active="true"] {
+  background-color: #1677FF;
+  color: white;
+}
+
+.cardGroup {
+  /* display: grid; */
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+}
+
+.card {
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
